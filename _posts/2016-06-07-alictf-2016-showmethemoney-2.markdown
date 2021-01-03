@@ -57,6 +57,7 @@ Fast forward a day later, I decided to list the information that I currently pos
 After listing the 2nd item, I already knew what I missed. So I fired up nmap and decided to take a look at this server, which luckily was and is still running at the time of writing of this post. There were 3 open ports: `80 (http)`, `22 (ssh)`, and `9999`.
 We know that `9999` is the port that the ransomware sends the keys to, but why is `80` open?
 
+{: style="text-align:center"}
 ![greetings](/content/images/2016/06/greetings.png)
 
 Oh look, what is this? [vvss](https://github.com/khalednassar/ctf_writeups/blob/master/alictf2016/showmethemoney/vvss)?
