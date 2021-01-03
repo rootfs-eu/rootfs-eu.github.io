@@ -13,7 +13,7 @@ Unfortunately I didn't have much time to play this CTF, but this challenge caugh
 
 **Note:** All the files related to this challenge can be found [here](https://github.com/khalednassar/ctf_writeups/tree/master/alictf2016/showmethemoney)
 
-#### Reconnaissance (and failures)
+## Reconnaissance (and failures)
 So we were given [showmethemoney.zip](https://github.com/khalednassar/ctf_writeups/blob/master/alictf2016/showmethemoney/showmethemoney_481bc5a72f7872a27e38a464ae97e935.zip) with the description:
 > test:showmethemoney
 
@@ -69,7 +69,7 @@ For `(1)` and `(2)`, it forms a query that it executes on `keys.db`. `(1)` adds 
 
 However, `(3)` runs a `select * from keys;` query on `keysbak.db`. Yep, there it is.
 
-#### Attack vector (Very Very Secure System)
+## Attack vector (Very Very Secure System)
 So now that we know what we need to do, it's very easy to write a [python script](https://github.com/khalednassar/ctf_writeups/blob/master/alictf2016/showmethemoney/attack.py) that will send our query to the process. This is the output from the script:
 ```python
 > python attack.py
