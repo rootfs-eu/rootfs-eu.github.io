@@ -1,6 +1,7 @@
 ---
 layout: post
 title: ALICTF 2016 - showmethemoney
+permalink: alictf-2016-showmethemoney-2
 date: '2016-06-07 11:07:05'
 tags:
 - writeup
@@ -12,7 +13,7 @@ Unfortunately I didn't have much time to play this CTF, but this challenge caugh
 
 **Note:** All the files related to this challenge can be found [here](https://github.com/khalednassar/ctf_writeups/tree/master/alictf2016/showmethemoney)
 
-####Reconnaissance (and failures)
+#### Reconnaissance (and failures)
 So we were given [showmethemoney.zip](https://github.com/khalednassar/ctf_writeups/blob/master/alictf2016/showmethemoney/showmethemoney_481bc5a72f7872a27e38a464ae97e935.zip) with the description:
 > test:showmethemoney
 
@@ -30,9 +31,14 @@ Not very helpful, but we check out the contents and we find 3 files
 Not very informative yet, but seems highly likely that we're looking at some hypothetical ransomware situation. We need to dig deeper.
 
 A quick look at `showmethemoney.exe` reveals that it is a .NET executable. Neat. So I fired up .NET Reflector to check it out. The application is relatively simple, just a couple of classes.
+
+{: style="text-align:center"}
 ![appinternals](/content/images/2016/06/appinternals.png)
+
 `AesCryptoHelper` is a rather peculiar wrapper class around .NET's `AESCryptoServiceProvider`, and it seems like a red herring because it's never referenced in the code that actually gets run. Let's dig a little deeper then.
+
 ![programcs](/content/images/2016/06/programcs.png)
+
 There are some interesting things going on here, but for a quick rundown of how things happen starting with `Main`:
 
 1. An `ID` is generated using `Guid.NewGuid()`
@@ -49,6 +55,7 @@ Fast forward a day later, I decided to list the information that I currently pos
 
 After listing the 2nd item, I already knew what I missed. So I fired up nmap and decided to take a look at this server, which luckily was and is still running at the time of writing of this post. There were 3 open ports: `80 (http)`, `22 (ssh)`, and `9999`.
 We know that `9999` is the port that the ransomware sends the keys to, but why is `80` open?
+
 ![greetings](/content/images/2016/06/greetings.png)
 
 Oh look, what is this? [vvss](https://github.com/khalednassar/ctf_writeups/blob/master/alictf2016/showmethemoney/vvss)?
@@ -62,7 +69,7 @@ For `(1)` and `(2)`, it forms a query that it executes on `keys.db`. `(1)` adds 
 
 However, `(3)` runs a `select * from keys;` query on `keysbak.db`. Yep, there it is.
 
-####Attack vector (Very Very Secure System)
+#### Attack vector (Very Very Secure System)
 So now that we know what we need to do, it's very easy to write a [python script](https://github.com/khalednassar/ctf_writeups/blob/master/alictf2016/showmethemoney/attack.py) that will send our query to the process. This is the output from the script:
 ```python
 > python attack.py
