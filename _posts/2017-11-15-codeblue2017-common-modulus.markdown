@@ -3,6 +3,7 @@ layout: post
 title: CODE BLUE CTF 2017 - Common Modulus series
 permalink: codeblue2017-common-modulus
 date: '2017-11-15 20:39:00'
+author: kmhn
 tags:
 - writeup
 - ctf
@@ -36,21 +37,25 @@ The common setting is that we're given two RSA-encrypted messages \\((c_1, c_2)\
 
 In terms of operations that we can do, we can multiply both ciphertexts to get a third ciphertext \\(c_m\\). That is because textbook RSA is [homomorphic](https://en.wikipedia.org/wiki/Homomorphism) with regards to (integer) multiplication. This operation would yield
 
+$$
 \begin{align}
 & c_m & \mod n\\\\
 & = c_1 \cdot c_2 & \mod n\\\\
 & = m^{e_1} \cdot m^{e_2} & \mod n\\\\
 & = m^{e_1 + e_2} & \mod n
 \end{align}
+$$
 
 And if we were to raise \\(c_1\\) and \\(c_2\\) to the powers of \\(x\\) and \\(y\\), respectively, then multiply them together
 
+$$
 \begin{align}
 c_m = c_1^{x} \cdot c_2^{y} & = (m^{e_1})^{x} \cdot (m^{e_2})^{y} & \mod n\\\\
 & = m^{e_1 \cdot x} \cdot m^{e_2 \cdot y} & \mod n\\\\
 & = m^{x \cdot e_1} \cdot m^{y \cdot e_2} & \mod n\\\\
 & = m^{x \cdot e_1 + y \cdot e_2} & \mod n
 \end{align}
+$$
 
 At this point, we can take advantage of [Bézout's identity](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity), which simply states
 
@@ -62,12 +67,14 @@ We can calculate \\(x\\) and \\(y\\) efficiently using the [Extended Euclidean A
 ### Common Modulus 1
 This is the simplest variation, because \\(e_1\\) and \\(e_2\\) are relatively prime, meaning that their greatest common divisor is 1, so it yields
 
+$$
 \begin{align}
 c_m = c_1^{x} \cdot c_2^{y} & = m^{e_1 \cdot x} \cdot m^{e_2 \cdot y} & \mod n & \\\\
 & = m^{e_1 \cdot x + e_2 \cdot y} & \mod n & \\\\
 & = m^{1} & \mod n & \quad \text{By Bézout's identity} \\\\
 & = m
 \end{align}
+$$
 
 So we've successfully recovered the first message, and hence the the first flag: `CBCTF{6ac2afd2fc108894db8ab21d1e30d3f3}`.
 
@@ -89,8 +96,9 @@ In this variation, the hardest of the three, not only is the greatest common div
 1. The modulus is quite large at 8192, meaning that the - unpadded - message must be at least 482 bits (8192 / 17 bits) so that the 17th power becomes sort of a problem. Therefore, knowing the length of the message is 312 bits because it follows the same format as the other challenges in this CTF, we can actually calculate the 17th root of \\(m^{17} \mod n\\) and successfully recover the flag IF there were no padding.
 2. The padding is deterministic and linear. It is the equivalent of multiplying the flag with a very large power of 2, since the bitstring representation would be \\(XXXXX...0000000000000...0\\) where \\(XXXXX\\) is the binary representation of the coveted flag.
 
-Using these two facts stated above, we can _unpad_ the message by first calculating the **padding coefficient** ^[_Probably_ not a real term. It simply seemed apt.] which is \\(2^B \mod n\\) where \\(B = \\) the number of bits needed to pad the message to be close to 8192 bits, which is \\(8192 - 312 = ~7880\\) bits. Afterwards, we get the modular inverse for the previously calculated padding coefficient, yielding \\(2^{-B} \mod n\\). We then calculate \\(2^{-B \cdot 17} \mod n\\) by raising the previous value to the power of 17. Now, if we multiply that with \\(m_p^{17}\\) what we get is
+Using these two facts stated above, we can _unpad_ the message by first calculating the **padding coefficient**[^pad_coeff] which is \\(2^B \mod n\\) where \\(B = \\) the number of bits needed to pad the message to be close to 8192 bits, which is \\(8192 - 312 = ~7880\\) bits. Afterwards, we get the modular inverse for the previously calculated padding coefficient, yielding \\(2^{-B} \mod n\\). We then calculate \\(2^{-B \cdot 17} \mod n\\) by raising the previous value to the power of 17. Now, if we multiply that with \\(m_p^{17}\\) what we get is
 
+$$
 \begin{align}
 & m_p^{17} \cdot 2^{-B \cdot 17} & \mod n\\\\
 & = (m \cdot 2^{B})^{17} \cdot 2^{-B \cdot 17} & \mod n\\\\
@@ -99,7 +107,10 @@ Using these two facts stated above, we can _unpad_ the message by first calculat
 & = m^{17} \cdot (2^{(B \cdot 17) + (-B \cdot 17)}) & \mod n\\\\
 & = m^{17} \cdot 1 & \mod n
 \end{align}
+$$
 
 So we've successfully calculated \\(m^{17} \mod n\\) and, as previously mentioned, we can also calculate the 17th root to recover \\(m\\) itself.
 
 But wait, we haven't actually decided what \\(B\\) is! Well, in the worst case, we're going to be a few bits off from the real value, so we can simply write a program that does all the steps described above, retrieves a candidate \\(m\\) and checks that it starts with the expected `CBCTF`. We can use a conservative starting value \\(B = 7868\\), and within only 4 attempts, we recover the flag: `CBCTF{b5c96e00cb90d11ec6eccdc58ef0272d}`.
+
+[^pad_coeff]: _Probably_ not a real term. It simply seemed apt.
