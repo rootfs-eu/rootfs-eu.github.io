@@ -1,8 +1,8 @@
 <div class="post-meta">
   <span class="post-date">{{ include.post.date | date_to_string }}</span>
-  {% if page.author %}
+  {% if include.post.author %}
     &bull;
-    {% assign author = site.authors[page.author] %}
+    {% assign author = site.authors[include.post.author] %}
     <a href="{{ author.url }}"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="post-author" itemprop="name">{{ author.name }}</span></span></a>
   {% endif %}
   <span class="post-categories">
