@@ -1,7 +1,7 @@
 ---
 layout: post
 title: ALICTF 2016 - showmethemoney
-permalink: alictf-2016-showmethemoney-2
+permalink: alictf-2016-showmethemoney-2/
 date: '2016-06-07 11:07:05'
 author: kmhn
 tags:

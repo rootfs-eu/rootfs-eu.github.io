@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Lessons learned from a failed hackathon
-permalink: lessons-learned-from-a-failed-hackathon
+permalink: lessons-learned-from-a-failed-hackathon/
 date: '2016-12-01 11:56:33'
 author: mono
 tags:

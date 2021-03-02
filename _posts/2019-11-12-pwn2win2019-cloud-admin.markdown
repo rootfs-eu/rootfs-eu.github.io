@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Pwn2Win CTF 2019 - Cloud Admin
-permalink: pwn2win2019-cloud-admin
+permalink: pwn2win2019-cloud-admin/
 date: '2019-11-12 10:30:00'
 author: kmhn
 tags:

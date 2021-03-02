@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Building on blockchains
-permalink: building-on-blockchains
+permalink: building-on-blockchains/
 date: '2017-01-31 23:00:07'
 author: mono
 tags:

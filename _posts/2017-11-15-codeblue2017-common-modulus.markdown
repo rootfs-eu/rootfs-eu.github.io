@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CODE BLUE CTF 2017 - Common Modulus series
-permalink: codeblue2017-common-modulus
+permalink: codeblue2017-common-modulus/
 date: '2017-11-15 20:39:00'
 author: kmhn
 tags:
